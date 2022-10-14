@@ -1,0 +1,29 @@
+var path = require("path");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = {
+  mode: "development",
+  entry: "./src/index.js",
+  devtool: "eval-cheap-source-map",
+  output: {
+    path: path.join(__dirname, "dist", "assets"),
+    filename: "bundle.js",
+  },
+  devServer: {
+    port: 9000,
+  },
+  module: {
+    rules: [{ test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" }],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({ template: "index.html" })
+  ],
+  resolve: {
+    extensions: ["*", ".js", ".jsx", ".css", ".scss", ".json"]
+  },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  }
+};
