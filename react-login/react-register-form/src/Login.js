@@ -1,6 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
+import AuthContext from './context/AuthProvider';
+
+import axios from "./api/axios";
+const LOGIN_URL = "/auth";
 
 function Login() {
+  const { setAuth } = useContext(AuthContext);
   const userRef = useRef();
   const errRef = useRef();
 
@@ -17,6 +22,38 @@ function Login() {
     setErrMsg("");
   }, [user, pwd])
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(LOGIN_URL, 
+        JSON.stringify({ user, pwd }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(JSON.stringify(response?.data));
+      // console.log(JSON.stringify(response))
+      const accessToken = response?.data?.accssToken;
+      const roles = response?.data?.roles;
+      setAuth({ user, pwd, roles, accessToken })
+      setUser("");
+      setPwd("");
+      setSuccess(true);
+    } catch (err) {
+      if (!err?.reponse) {
+        setErrMsg("No Server Response");
+      } else if (err.reponse?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.reponse?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+      errRef.current.focus(); // 스크린 리더가 읽을 수 있도록 포커스를 errRef로 가리키기
+    }
+  };
+
   return (
     <>
       {success ? (
@@ -32,7 +69,7 @@ function Login() {
           <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
           <h1>Sign In</h1>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <label htmlFor='username'>Username:</label>
             <input
               type="text"
@@ -49,6 +86,8 @@ function Login() {
               type="password"
               id="password"
               onChange={({ target }) => setPwd(target.value)}
+              value={pwd}
+              required
             />
           </form>
           <p>
