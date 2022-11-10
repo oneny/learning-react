@@ -1,0 +1,77 @@
+const express = require("express");
+// const morgan = require("morgan");
+const cors = require("cors");
+const path = require("path");
+const { logEvents, logger } = require("./middleware/logEvents");
+const errorHandler = require("./middleware/errorHandler");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const dotenv = require("dotenv");
+const corsOptions = require("./config/corsOptions");
+const credentials = require("./middleware/credentials");
+
+const subdir = require("./routes/subdir");
+
+dotenv.config();
+const app = express();
+app.set("port", process.env.PORT || 3500);
+// custom middleware logger
+// app.use(morgan("dev"));
+app.use(logger);
+
+// Cross Origin Resource Sharing
+app.use(credentials);
+app.use(cors(corsOptions));
+
+// built-in middleware to handle urlencoded data
+// in other words, form data:
+// 'content-type: application/x-www-form-urlencoded'
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // built-in middleware for json
+app.use("/", express.static(path.join(__dirname, "uploads"))); // serve static files
+
+
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(session({
+  saveUninitialized: false,
+  resave: false,
+  secret: process.env.COOKIE_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+  }
+}));
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
+
+
+// routes
+app.use("/", require("./routes/root"));
+app.use("/register", require("./routes/register"));
+app.use("/auth", require("./routes/auth"));
+
+app.use((req, res, next) => { // 404 미들웨어
+  // const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+  // error.status = 404;
+  // next(error);
+  
+  res.status(404);
+  // if (req.accepts("html")) {
+  //   res.sendFile(path.join(__dirname, "views", "404.html" ));
+  // }
+  if (req.accepts("json")) {
+    res.json({ error: "404 Not Found" });
+  } else {
+    res.type("txt").send("404 Not Found");
+  }
+});
+
+app.use(errorHandler);
+
+app.listen(app.get("port"), () => {
+  console.log(app.get("port"), "번 포트 - 서버 실행 중");
+});
