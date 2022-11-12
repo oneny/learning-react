@@ -6,13 +6,13 @@ const { logEvents, logger } = require("./middleware/logEvents");
 const errorHandler = require("./middleware/errorHandler");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const dotenv = require("dotenv");
 const corsOptions = require("./config/corsOptions");
 const credentials = require("./middleware/credentials");
+const verifyJWT = require("./middleware/verifyJWT");
 
 const subdir = require("./routes/subdir");
 
-dotenv.config();
+require("dotenv").config();
 const app = express();
 app.set("port", process.env.PORT || 3500);
 // custom middleware logger
@@ -53,6 +53,9 @@ app.use((req, res, next) => {
 app.use("/", require("./routes/root"));
 app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
+
+app.use(verifyJWT);
+app.use("/employees", require("./routes/api/employees"));
 
 app.use((req, res, next) => { // 404 미들웨어
   // const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
