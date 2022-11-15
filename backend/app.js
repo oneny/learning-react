@@ -1,4 +1,6 @@
+require("dotenv").config();
 const express = require("express");
+const app = express();
 // const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
@@ -9,18 +11,23 @@ const cookieParser = require("cookie-parser");
 const corsOptions = require("./config/corsOptions");
 const credentials = require("./middleware/credentials");
 const verifyJWT = require("./middleware/verifyJWT");
+const mongoose = require("mongoose");
+const connectDB = require("./config/dbConn");
 
-const subdir = require("./routes/subdir");
-
-require("dotenv").config();
-const app = express();
 app.set("port", process.env.PORT || 3500);
+
+// Connect to MongoDB
+connectDB();
+
 // custom middleware logger
 // app.use(morgan("dev"));
 app.use(logger);
 
-// Cross Origin Resource Sharing
+// Handle options credentials check - before CORS!
+// and fetch cookies credentitals requirement
 app.use(credentials);
+
+// Cross Origin Resource Sharing
 app.use(cors(corsOptions));
 
 // built-in middleware to handle urlencoded data
@@ -28,10 +35,13 @@ app.use(cors(corsOptions));
 // 'content-type: application/x-www-form-urlencoded'
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // built-in middleware for json
+
+// middlewrare for cookies
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
 app.use("/", express.static(path.join(__dirname, "uploads"))); // serve static files
 
 
-app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
   saveUninitialized: false,
   resave: false,
@@ -53,6 +63,8 @@ app.use((req, res, next) => {
 app.use("/", require("./routes/root"));
 app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
+app.use("/refresh", require("./routes/refresh"));
+app.use("/logout", require("./routes/logout"));
 
 app.use(verifyJWT);
 app.use("/employees", require("./routes/api/employees"));
@@ -74,6 +86,7 @@ app.use((req, res, next) => { // 404 미들웨어
 });
 
 app.use(errorHandler);
+
 
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트 - 서버 실행 중");

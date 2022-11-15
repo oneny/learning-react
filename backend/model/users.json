@@ -1,1 +1,1 @@
-[{"username":"oneny","password":"$2b$10$FnGvKGlRiBapk1e/R.Hbvu4aOu7MzYJoh6ojL/fq/fr0f.m.GvmAy","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VuYW1lIjoib25lbnkiLCJpYXQiOjE2NjgyMjIzNTcsImV4cCI6MTY2ODMwODc1N30.9j_6twiGqKFrqIt4c6DRjdfNXtNfZrOw0T8mJ_si4N0"}]
+[{"username":"oneny","roles":{"User":2001},"password":"$2b$10$FnGvKGlRiBapk1e/R.Hbvu4aOu7MzYJoh6ojL/fq/fr0f.m.GvmAy","refreshToken":""},{"username":"jaewon","roles":{"User":2001,"Editor":1984,"Admin":5150},"password":"$2b$10$2m3nUJtcmnVSg8i0NjiEVeJECm2JhEqdEIiyzsGibUfn3xgfZjsTW"}]
