@@ -87,7 +87,7 @@ const handleRefreshToken = async (req, res) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "30s" }
+      { expiresIn: "10s" }
     );
     res.json({ accessToken, roles });
   });
@@ -102,7 +102,7 @@ module.exports = { handleRefreshToken };
   - 어디를 다녀와도 새로고침을 해도 `get /refresh`로 보내서 해당 API에서 다시 사용자 정보가 담긴 `accessToken`을 보내준다!
 - 그리고 다시 `setAuth`를 통해 `auth` 상태에 저장!
 
-### 그리고 다시 PersistLogin을 보자!
+### 그리고 PersistLogin을 보자!
 
 ```js
 import { Outlet } from "react-router-dom";
@@ -116,22 +116,22 @@ function PersistLogin() {
   const { auth, persist } = useAuth();
 
   useEffect(() => {
-    // let isMounted = true;
-    console.log(auth);
+    let isMounted = true;
+    
     const verifyRefreshToken = async () => {
       try {
         await refresh();
       } catch (err) {
         console.error(err);
       } finally {
-        /* isMounted && */ setIsLoading(false);
+        isMounted && setIsLoading(false);
       }
 
-      // avoids unwanted call to verifyRefreshToken
-    };
-    !auth?.accessToken /* && persist */
-      ? verifyRefreshToken()
-      : setIsLoading(false);
+    }
+    // avoids unwanted call to verifyRefreshToken
+    !auth?.accessToken && persist ? verifyRefreshToken() : setIsLoading(false);
+
+    return () => isMounted = false;
   }, []);
 
   useEffect(() => {
@@ -141,14 +141,20 @@ function PersistLogin() {
 
   return (
     <>
-      {/* {!persist
-        ? <Outlet /> */}
-      {isLoading ? <p>Loading...</p> : <Outlet />}
+      {!persist
+        ? <Outlet />
+        : isLoading
+          ? <p>Loading...</p>
+          : <Outlet />
+      }
     </>
-  );
+  )
 }
 
 export default PersistLogin;
 ```
 
 - `await refrsh()`를 통해 아까의 과정을 거치고 로그인 인증이 되었으면 자식 컴포넌트(Outlet)을 보여주자!
+- `access token`같은 경우는 `localStorage`에 저장하지 않는 것이 좋지만 `persist`같은 경우는 해당 디바이스를 믿냐고 물어보는 단순 boolean이기 때문에 `localStorage`에 저장
+  - 로그인 페이지에서 `persist`를 로그인 시 `true`로 만들면 `verifyRefrshToken` 함수에 의해 로그인이 안풀리고 다시 `accessToken`을 받아온다.
+  - `persist`를 로그인 시 `false`로 두면 위의 과정없이 유저의 로그인 정보가 사라지게 된다.
