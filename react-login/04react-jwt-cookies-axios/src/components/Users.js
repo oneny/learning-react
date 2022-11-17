@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import useAxios from "../hooks/useAxios";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Users() {
@@ -20,9 +21,7 @@ function Users() {
 
     const getUsers = async () => {
       try {
-        const response = await axiosPrivate.get("/users", {
-          // signal: controller.signal,
-        });
+        const response = await axiosPrivate.get("/users");
         console.log('jo', response.data);
         isMounted && setUsers(response.data);
       } catch (err) {
