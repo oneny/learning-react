@@ -50,7 +50,7 @@ const handleLogin = async (req, res) => {
     console.log(result);
 
     // refrshToken은 쿠키로
-    res.cookie("jwt", refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 }); // secure: true
+    res.cookie("jwt", refreshToken, { HttpOnly: true, SameSite: "None", maxAge: 24 * 60 * 60 * 1000 }); // secure: true
     res.json({ accessToken, roles }); // accessToken은 json으로
   } else {
     res.sendStatus(401); // Unauthorized

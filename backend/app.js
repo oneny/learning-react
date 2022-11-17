@@ -37,20 +37,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // built-in middleware for json
 
 // middlewrare for cookies
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "uploads"))); // serve static files
 
 
-app.use(session({
-  saveUninitialized: false,
-  resave: false,
-  secret: process.env.COOKIE_SECRET,
-  cookie: {
-    httpOnly: true,
-    secure: false,
-  }
-}));
+// app.use(session({
+//   saveUninitialized: false,
+//   resave: false,
+//   secret: process.env.COOKIE_SECRET,
+//   cookie: {
+//     httpOnly: true,
+//     secure: false,
+//   }
+// }));
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
@@ -68,6 +68,7 @@ app.use("/logout", require("./routes/logout"));
 
 app.use(verifyJWT);
 app.use("/employees", require("./routes/api/employees"));
+app.use("/users", require("./routes/api/users"));
 
 app.use((req, res, next) => { // 404 미들웨어
   // const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

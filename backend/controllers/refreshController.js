@@ -9,6 +9,7 @@ const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(401); // Unauthorized
   const refreshToken = cookies.jwt;
+  console.log(cookies);
 
   // DB에 저장된 refreshToken 비교
   // const foundUser = usersDB.users.find(person => person.refreshToken === refreshToken);
