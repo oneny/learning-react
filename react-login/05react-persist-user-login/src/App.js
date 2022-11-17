@@ -9,6 +9,7 @@ import Admin from "./components/Admin";
 import Lounge from "./components/Lounge";
 import Missing from "./components/Missing";
 import ROLES from "./utils/ROLES";
+import PersistLogin from "./components/PersistLogin";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";
@@ -25,20 +26,22 @@ function App() {
           <Route path="unauthorized" element={<Unauthroized />} />
   
           {/* we want to protect these routes */}
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />} >
-            <Route path="/" element={<Home />} />
-          </Route>
-  
-          <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />} >
-            <Route path="/editor" element={<Editor />} />
-          </Route>
-  
-          <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />} >
-            <Route path="/admin" element={<Admin />} />
-          </Route>
-  
-          <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />} >
-            <Route path="/lounge" element={<Lounge />} />
+          <Route element={<PersistLogin />}>
+            <Route element={<RequireAuth allowedRoles={[ROLES.User]} />} >
+              <Route path="/" element={<Home />} />
+            </Route>
+    
+            <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />} >
+              <Route path="/editor" element={<Editor />} />
+            </Route>
+    
+            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />} >
+              <Route path="/admin" element={<Admin />} />
+            </Route>
+    
+            <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />} >
+              <Route path="/lounge" element={<Lounge />} />
+            </Route>
           </Route>
   
           {/* catch call */}

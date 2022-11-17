@@ -5,6 +5,7 @@ function RequireAuth({ allowedRoles }) {
   const { auth } = useAuth();
   const location = useLocation();
   console.log(allowedRoles);
+  console.log(auth);
 
   // RequireAuth component can protect all the child components that are nested inside of it. 
   return (
