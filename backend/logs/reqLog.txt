@@ -1527,3 +1527,16 @@
 20221117	10:53:25	db8c211d-c7fa-4712-ac08-277dcf0078f5	OPTIONS	http://localhost:3000	/users
 20221117	10:53:25	3b402c97-b6d8-4713-bac1-6f4be1d168fe	GET	http://localhost:3000	/users
 20221117	10:53:28	a70f4374-f4f3-4809-ada4-82239185c386	GET	http://localhost:3000	/users
+20221117	11:03:55	071096e7-8c58-4c28-aabe-47e625ff83d3	OPTIONS	http://localhost:3000	/users
+20221117	11:03:55	0abb2770-333e-4aea-86a0-8be5aa72b2ef	GET	http://localhost:3000	/users
+20221117	11:03:55	e3c7701e-f182-484b-97eb-e5c9e5e0f247	GET	http://localhost:3000	/refresh
+20221117	11:03:55	cb26f3fa-23f3-4627-a87b-87424cbad5fd	GET	http://localhost:3000	/users
+20221117	11:04:07	7daf1ff4-6688-479c-9663-3790d7e4dcf0	OPTIONS	http://localhost:3000	/users
+20221117	11:04:07	4dbf0ccc-ed80-4824-bae0-94ab358bdd08	GET	http://localhost:3000	/users
+20221117	11:04:10	21de8f40-3571-4925-b84b-0a2b81abd37f	GET	http://localhost:3000	/users
+20221117	11:04:21	cbe99a49-f018-42f8-8c00-721c4c7c303a	OPTIONS	http://localhost:3000	/users
+20221117	11:04:21	f9db3efc-3f91-4393-a1ea-653519384f5b	GET	http://localhost:3000	/users
+20221117	11:27:02	61ee440f-7f52-48e7-b626-92c1a1fe70e0	OPTIONS	http://localhost:3000	/users
+20221117	11:27:02	cea30479-a0e9-4ef6-b3fa-41702098ebe0	GET	http://localhost:3000	/users
+20221117	11:27:02	06e1c7ea-076b-46eb-a6d0-f6f7299d0c37	GET	http://localhost:3000	/refresh
+20221117	11:27:02	9d050124-9070-432c-8758-7d727188cc0e	GET	http://localhost:3000	/users
