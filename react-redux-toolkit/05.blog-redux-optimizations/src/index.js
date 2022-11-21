@@ -7,7 +7,7 @@ import { store } from "./app/store";
 import { fetchPosts } from "./features/posts/postsSlice";
 import { fetchUsers } from "./features/users/usersSlice";
 
-store.dispatch(fetchPosts() );
+store.dispatch(fetchPosts());
 store.dispatch(fetchUsers());
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
