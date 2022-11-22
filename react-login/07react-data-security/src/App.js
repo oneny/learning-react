@@ -23,7 +23,6 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="linkpage" element={<LinkPage />} />
-          <Route path="unauthorized" element={<Unauthroized />} />
   
           {/* we want to protect these routes */}
           <Route element={<PersistLogin />}>
@@ -42,6 +41,8 @@ function App() {
             <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />} >
               <Route path="/lounge" element={<Lounge />} />
             </Route>
+            
+            <Route path="unauthorized" element={<Unauthroized />} />
           </Route>
   
           {/* catch call */}

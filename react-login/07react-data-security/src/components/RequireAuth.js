@@ -5,6 +5,7 @@ import jwt_decode  from "jwt-decode";
 function RequireAuth({ allowedRoles }) {
   const { auth } = useAuth();
   const location = useLocation();
+  console.log(auth);
 
   const decoded = auth?.accessToken
     ? jwt_decode(auth.accessToken)
@@ -16,7 +17,7 @@ function RequireAuth({ allowedRoles }) {
   return (
     roles?.find(role => allowedRoles?.includes(role))
       ? <Outlet /> // this one represents any child components of RequireAuth
-      : auth?.user 
+      : auth?.accessToken
         ? <Navigate to="/unauthorized" state={{ from: location }} replace /> // user는 있는데 해당하는 roles가 없는 경우
         : <Navigate to="/login" state={{ from: location }} replace />
   )
