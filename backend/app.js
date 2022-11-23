@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-// const morgan = require("morgan");
+const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
 const { logEvents, logger } = require("./middleware/logEvents");
@@ -11,7 +11,6 @@ const cookieParser = require("cookie-parser");
 const corsOptions = require("./config/corsOptions");
 const credentials = require("./middleware/credentials");
 const verifyJWT = require("./middleware/verifyJWT");
-const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
 
 app.set("port", process.env.PORT || 3500);
@@ -20,7 +19,7 @@ app.set("port", process.env.PORT || 3500);
 connectDB();
 
 // custom middleware logger
-// app.use(morgan("dev"));
+app.use(morgan("dev"));
 app.use(logger);
 
 // Handle options credentials check - before CORS!
