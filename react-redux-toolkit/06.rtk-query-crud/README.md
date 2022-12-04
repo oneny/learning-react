@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+## rtk query 기본 실습
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```js
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-## Available Scripts
+// baseURL과 endpoints들로 서비스 정의
+export const apiSlice = createApi({
+  reducerPath: "api", // 스토어의 reducer로 지정할 path의 이름
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3500" }), // 기본으로 지정할 서버 URL
+  tagTypes: ["Todos"], // tagTypes: 자동으로 데이터가 패치되게 구별할 타입
+  endpoints: (builder) => ({
+    // 엔드 포인트들
+    getTodos: builder.query({
+      query: () => "/todos",
+      transformResponse: res => res.sort((a, b) => b.id - a.id),
+      // providesTags는 invalidTags가 실행될 때 자동으로 패치될 쿼리를 나타낸다.
+      providesTags: ["Todos"],
+    }),
+    addTodo: builder.mutation({
+      query: (todo) => ({
+        url: "todos",
+        method: "POST",
+        body: todo,
+      }),
+      invalidatesTags: ['Todos'],
+    }),
+    updateTodo: builder.mutation({
+      query: (todo) => ({
+        url: `/todos/${todo.id}`,
+        method: "PATCH",
+        body: todo,
+      }),
+      invalidatesTags: ['Todos'],
+    }),
+    deleteTodo: builder.mutation({
+      query: ({ id }) => ({
+        url: `/todos/${id}`,
+        method: "DELETE",
+        body: id,
+      }),
+      invalidatesTags: ['Todos'],
+    }),
+  }),
+});
 
-In the project directory, you can run:
 
-### `npm start`
+// 정의된 엔드포인트에서 자동으로 생성된 훅을 함수형 컴포넌트에서 사용하기 위해 export
+export const {
+  useGetTodosQuery,
+  useAddTodoMutation,
+  useUpdateTodoMutation,
+  useDeleteTodoMutation,
+} = apiSlice;
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* `reducerPath`: 스토어의 reducer로 지정할 path의 이름
+* `baseQuery`: 기본으로 지정할 서버 URL
+* `tagTypes`: 자동으로 데이터가 패치되게 구별할 타입
+* `endpoints`: 엔드포인트에서 request하여 받은 데이터를 가지고 hooks를 만든다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## 기본 사항
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Query
 
-### `npm run build`
+주로 데이터를 가져올 때 query를 사용한다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Mutation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+생성/업데이트 또는 삭제할 때 주로 Mutation을 사용하곤 한다.  
+뮤테이션은 주로 업데이트를 하거나, 로컬 캐시에 변경된 사항을 적용하고, 무효화된 캐시 데이터를 강제로 리패치가 가능하다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Mutation에서 제공해주는 property들
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* `data`: 가장 최근 트리거된 응답이다. 데이터가 전달받기 전엔 undefined를 응답받을 것이다.
+* `error`: 현재 기준의 에러
+* `isUninitialized`: true일 경우, 이는 뮤테이션이 아직 실행이 안되었다는 말을 뜻한다.
+* `isLoading`: true일 경우, 이는 뮤테이션이 아직 응답을 기다리고 있음을 뜻한다.
+* `isSuccess`: true일 경우, 이는 마지막으로 실행된 뮤테이션이 응답에 성공했음을 의미한다.
+* `isError`: true일 경우, 이는 마지막으로 실행된 뮤테이션 응답이 실패했음을 뜻하게 된다.
+* `reset`: 이 메서드는 현재 캐싱된 응답을 지우고, 기존 state로 리셋시켜준다.
