@@ -2211,3 +2211,9 @@
 20221208	14:29:45	eefb429b-22a5-4180-b4b4-adc09c9d5f9b	OPTIONS	http://localhost:3000	/refresh
 20221208	14:29:45	d9e4a402-49c0-4620-a7df-335a6a0ae20f	GET	http://localhost:3000	/refresh
 20221208	14:29:45	73c601e8-29f2-4724-997f-c87e6d24b9e7	GET	http://localhost:3000	/users
+20221208	19:30:55	9466cbbb-4454-4f04-a256-6da20eab6e6e	GET	http://localhost:3000	/users
+20221208	19:32:02	30339600-d06d-490f-ad14-44bf6c762020	GET	http://localhost:3000	/users
+20221208	19:33:31	276fccc9-10e6-4da6-bc35-646613fdeaea	GET	http://localhost:3000	/users
+20221208	19:34:13	1b0707ea-3bd7-4923-8b25-8c62e19782f5	GET	http://localhost:3000	/users
+20221208	19:34:21	307866d3-b63a-4510-9156-6248d09a421b	GET	http://localhost:3000	/users
+20221208	19:34:26	c074d371-1014-431c-843a-5178492a2922	GET	http://localhost:3000	/users
