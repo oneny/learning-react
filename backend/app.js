@@ -68,6 +68,7 @@ app.use("/logout", require("./routes/logout"));
 app.use(verifyJWT);
 app.use("/employees", require("./routes/api/employees"));
 app.use("/users", require("./routes/api/users"));
+app.use('/notes', require('./routes/note'));
 
 app.use((req, res, next) => { // 404 미들웨어
   // const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
