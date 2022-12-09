@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import useTitle from '../hooks/useTitle';
 
 const Welcome = () => {
@@ -14,7 +15,7 @@ const Welcome = () => {
     <section className='welcome'>
       <p>{today}</p>
 
-      {/* <h1>Welcome {username}!</h1>
+      {/* <h1>Welcome {username}!</h1> */}
 
       <p>
         <Link to='/dash/notes'>View techNotes</Link>
@@ -24,17 +25,17 @@ const Welcome = () => {
         <Link to='/dash/notes/new'>Add New techNote</Link>
       </p>
 
-      {(isManager || isAdmin) && (
+      {/* {(isManager || isAdmin) && ( */}
         <p>
           <Link to='/dash/users'>View User Settings</Link>
         </p>
-      )}
+      {/* )} */}
 
-      {(isManager || isAdmin) && (
+      {/* {(isManager || isAdmin) && ( */}
         <p>
           <Link to='/dash/users/new'>Add New User</Link>
         </p>
-      )} */}
+      {/* )} */}
     </section>
   );
 

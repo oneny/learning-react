@@ -1,5 +1,5 @@
 import { useGetNotesQuery } from '../features/notes/notesApiSlice';
-import Note from '../components/Note';
+import Note from '../components/notes/Note';
 import PulseLoader from 'react-spinners/PulseLoader';
 
 const NotesList = () => {

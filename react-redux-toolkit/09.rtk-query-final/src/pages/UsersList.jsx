@@ -1,5 +1,5 @@
 import React from 'react';
-import User from '../components/User';
+import User from '../components/users/User';
 import { useGetUsersQuery } from '../features/users/usersApiSlice';
 import useTitle from '../hooks/useTitle';
 

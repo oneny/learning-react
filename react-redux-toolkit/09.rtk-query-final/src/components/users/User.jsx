@@ -9,9 +9,9 @@ const User = ({ user }) => {
   if (user) {
     const handleEdit = () => navigate(`/dash/users/${user.id}`);
 
-    const userRolesString = user.roles.toString().replaceAll(',', ', ');
+    const userRolesString = Object.keys(user.roles).join(', ');
 
-    const cellStatus = user.actice ? '' : 'table__cell--inactive';
+    const cellStatus = user.active ? '' : 'table__cell--inactive';
 
     return (
       <tr className='table__row user'>
