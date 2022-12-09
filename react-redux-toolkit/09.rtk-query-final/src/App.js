@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import DashLayout from './components/DashLayout';
 import Layout from './components/Layout';
 import Login from './pages/Login';
-import NoteList from './pages/NoteList';
+import NotesList from './pages/NotesList';
 import Public from './pages/Public';
 import UsersList from './pages/UsersList';
 import Welcome from './pages/Welcome';
@@ -18,7 +18,7 @@ function App() {
           <Route index element={<Welcome />} />
 
           <Route path='notes'>
-            <Route index element={<NoteList />} />
+            <Route index element={<NotesList />} />
           </Route>
 
           <Route path='users'>
