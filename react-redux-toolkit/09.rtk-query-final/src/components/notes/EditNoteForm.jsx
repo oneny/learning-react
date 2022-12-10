@@ -6,4 +6,4 @@ const EditNoteForm = () => {
   )
 }
 
-export default EditNoteForm 
+export default EditNoteForm;

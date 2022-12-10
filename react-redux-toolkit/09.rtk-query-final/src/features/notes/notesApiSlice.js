@@ -1,4 +1,5 @@
 import { apiSlice } from '../../app/api/apiSlice';
+import { setNotes } from './noteSlice';
 
 export const notesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -24,6 +25,14 @@ export const notesApiSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Note', id: 'LIST' }];
       },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setNotes(data));
+        } catch (err) {
+          console.error(err);
+        }
+      }
     }),
     addNewNote: builder.mutation({
       query: (initialNote) => ({

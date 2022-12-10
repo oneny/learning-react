@@ -12,7 +12,11 @@ const UsersList = () => {
     isSuccess,
     isError,
     error,
-  } = useGetUsersQuery();
+  } = useGetUsersQuery(undefined, {
+      pollingInterval: 60000, // new request for notes every 15 seconds
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    });
 
   let content;
 

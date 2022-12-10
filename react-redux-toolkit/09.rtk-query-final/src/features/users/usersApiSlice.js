@@ -1,4 +1,5 @@
 import { apiSlice } from '../../app/api/apiSlice';
+import { getUsers } from './usersSlice';
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,8 +20,24 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: (result = [], error, arg) => [
         { type: 'User', id: 'LIST' },
-        ...result.map(({ id }) => ({ type: 'Post', id })),
+        ...result.map(({ id }) => ({ type: 'User', id })),
       ],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(getUsers(data));
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }),
+    getUser: builder.query({
+      query: (id) => `/users/${id}`,
+      transformResponse: (responseData) => {
+        responseData.id = responseData._id;
+        return responseData;
+      },
+      providesTags: (result = [], err, arg) => [{ type: 'User', id: arg }],
     }),
     addNewUser: builder.mutation({
       query: (initialUserData) => ({
@@ -55,6 +72,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetUsersQuery,
+  useGetUserQuery,
   useAddNewUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,

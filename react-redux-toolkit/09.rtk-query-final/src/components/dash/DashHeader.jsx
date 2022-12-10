@@ -78,7 +78,7 @@ const DashHeader = () => {
   }
 
   const logoutButton = (
-    <button className='icon-button' title='Logout' onClick={() => {}}>
+    <button className='icon-button' title='Logout' onClick={() => navigate('/')}>
       <FontAwesomeIcon icon={faRightFromBracket} />
     </button>
   );

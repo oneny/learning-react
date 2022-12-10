@@ -6,4 +6,4 @@ const NewNoteForm = () => {
   )
 }
 
-export default NewNoteForm  
+export default NewNoteForm;
