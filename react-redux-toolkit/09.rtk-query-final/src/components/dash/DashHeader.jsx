@@ -8,6 +8,8 @@ import {
   faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useSendLogoutMutation } from '../../features/auth/authApiSlice';
+import PulseLoader from 'react-spinners/PulseLoader';
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const NOTES_REGEX = /^\/dash\/notes(\/)?$/;
@@ -16,6 +18,17 @@ const USERS_REGEX = /^\/dash\/users(\/)?$/;
 const DashHeader = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  const [sendLogout, { isLoading, isSuccess, isError, error }] =
+    useSendLogoutMutation();
+
+  useEffect(() => {
+    if (isSuccess) navigate('/');
+  }, [isSuccess, navigate]);
+
+  if (isLoading) return <p>Logging Out...</p>;
+
+  if (isError) return <p>Error: {error.message}</p>;
 
   const onNewNoteClicked = () => navigate('/dash/notes/new');
   const onNewUserClicked = () => navigate('/dash/users/new');
@@ -78,7 +91,11 @@ const DashHeader = () => {
   }
 
   const logoutButton = (
-    <button className='icon-button' title='Logout' onClick={() => navigate('/')}>
+    <button
+      className='icon-button'
+      title='Logout'
+      onClick={sendLogout}
+    >
       <FontAwesomeIcon icon={faRightFromBracket} />
     </button>
   );
@@ -86,19 +103,19 @@ const DashHeader = () => {
   // const errClass = isError ? "errmsg" : "offscreen"
 
   let buttonContent;
-  // if (isLoading) {
-  // buttonContent = <PulseLoader color={"#FFF"} />
-  // } else {
-  buttonContent = (
-    <>
-      {newNoteButton}
-      {newUserButton}
-      {notesButton}
-      {userButton}
-      {logoutButton}
-    </>
-  );
-  // }
+  if (isLoading) {
+    buttonContent = <PulseLoader color={'#FFF'} />;
+  } else {
+    buttonContent = (
+      <>
+        {newNoteButton}
+        {newUserButton}
+        {notesButton}
+        {userButton}
+        {logoutButton}
+      </>
+    );
+  }
 
   const content = (
     <>

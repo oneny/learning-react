@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGetUsersQuery } from '../features/users/usersApiSlice';
+import { useDispatch } from 'react-redux';
+
 import usePersist from '../hooks/usePersist';
 import useTitle from '../hooks/useTitle';
+import { setCredentials } from '../features/auth/authSlice';
+import { useLoginMutation } from '../features/auth/authApiSlice';
 
 const Logins = () => {
-  useTitle('RTK Practice | Login');
+  useTitle('teckNotes: Login');
 
   const userRef = useRef();
   const errRef = useRef();
@@ -18,7 +19,9 @@ const Logins = () => {
   const [persist, setPersist] = usePersist();
 
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
+  const [login, { isLoading }] = useLoginMutation();
 
   useEffect(() => {
     userRef.current.focus();
@@ -30,6 +33,24 @@ const Logins = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const { accessToken } = await login({ user: username, pwd: password }).unwrap();
+      dispatch(setCredentials({ accessToken }));
+      setUsername('');
+      setPassword('');
+      navigate('/dash');
+    } catch (err) {
+      if (!err.originalStatus) {
+        setErrMsg('No Server Response');
+      } else if (err.originalStatus === 400) {
+        setErrMsg('Missing Username or Password');
+      } else if (err.originalStatus === 401) {
+        setErrMsg('Unauthorized');
+      } else {
+        setErrMsg(err.data?.message);
+      }
+      errRef.current.focus();
+    }
   };
 
   const handleUserInput = (e) => setUsername(e.target.value);
@@ -37,6 +58,8 @@ const Logins = () => {
   const handleToggle = () => setPersist((prev) => !prev);
 
   const errClass = errMsg ? 'errmsg' : 'offscreen';
+
+  if (isLoading) return <p>Loading...</p>;
 
   const content = (
     <section className='public'>

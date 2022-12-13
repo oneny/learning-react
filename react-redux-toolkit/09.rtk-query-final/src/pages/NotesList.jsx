@@ -9,7 +9,7 @@ const NotesList = () => {
     isSuccess,
     isError,
     error,
-  } = useGetNotesQuery(undefined, {
+  } = useGetNotesQuery('notesList', {
     pollingInterval: 15000, // 쿼리가 지정된 milli seconds 간격으로 리패칭할지를 설정한다.
     refetchOnFocus: true, // 브라우저가 다시 focus되었을 때 쿼리를 리패칭해준다.
     refetchOnMountOrArgChange: true, // 네트워크 커넥션이 다시 이루어졌을 경우 리패칭해준다.

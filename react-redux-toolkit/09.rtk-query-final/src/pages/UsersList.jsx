@@ -6,24 +6,24 @@ import useTitle from '../hooks/useTitle';
 const UsersList = () => {
   useTitle('userList');
 
-  // const {
-  //   data: users,
-  //   isLoading,
-  //   isSuccess,
-  //   isError,
-  //   error,
-  // } = useGetUsersQuery(undefined, {
-  //     pollingInterval: 60000, // new request for notes every 15 seconds
-  //     refetchOnFocus: true,
-  //     refetchOnMountOrArgChange: true, // 페이지 들어가면 새로 리패칭함
-  //   });
   const {
     data: users,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetUsersQuery();
+  } = useGetUsersQuery('usersList', { // We will be able to see query label in Redux Devtools
+      pollingInterval: 60000, // new request for notes every 15 seconds
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true, // 페이지 들어가면 새로 리패칭함
+    });
+  // const {
+  //   data: users,
+  //   isLoading,
+  //   isSuccess,
+  //   isError,
+  //   error,
+  // } = useGetUsersQuery();
 
   let content;
 
