@@ -66,3 +66,28 @@
 * Prefetching can be used for any anticipated data needs
   * 추후 사용자가 사용할 법한 모든 데이터에 프리페칭을 사용한다.
 
+## Mutation
+
+* making a network call that changes data on the server
+  * 변이는 서버에 데이터를 업데이트(추가 및 삭제)하도록 서버에 네트워크 호출을 실시한다.
+* Day Spa app will demonstrate showing changes to user:
+  * Optimistic updates (assume change will happen)
+    * 낙관적 업데이트로 서버 호출에서 모든 내용이 잘 진행될 것으로 간주하는 것이다.
+    * 그리고 사실이 아닌 것으로 판명될 경우 롤백을 진행한다.
+  * Update React Query cache with data returned from the server
+    * 또 다른 방법은 변이 호출을 실행할 때 서버에서 받는 데이터를 취하고
+    * 업데이트된 해당 데이터로 React Query 캐시를 업데이트하는 것이다.
+  * Trigger re-fetch of relevant data (invalidation)
+    * 관련 쿼리를 무효화할 수 있다.
+    * 무효화하는 경우 서버에서 리페치를 개시하여 클라이언트에 있는 데이터를 서버의 데이터와 최신 상태로 유지하게 된다.
+
+### useMutation
+
+* Similar to useQuery, but
+  * returns `mutate` function
+  * doesn't need query key
+  * `isLoading` but no `isFetching`
+    * isLoading은 존재하지만 isFetching은 없다! (캐시된 항목이 없으므로!)
+  * by defaultm no retries (configurable!)
+    * 변이에 관련된 캐시는 존재하지 않고, 재시도 또한 기본값으로 존재하지 않는다. 
+    * useQuery는 기본값으로 3회 재시도하지만 useMutation은 기본값으로 재시도하지 않는다.
