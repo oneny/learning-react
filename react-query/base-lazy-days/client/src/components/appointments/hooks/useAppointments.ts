@@ -1,6 +1,7 @@
 // @ts-nocheck
 import dayjs from 'dayjs';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
@@ -59,6 +60,19 @@ export function useAppointments(): UseAppointments {
   //   appointments that the logged-in user has reserved (in white)
   const { user } = useUser();
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // 데이터가 모두 만료(stale) 상태가 되어 정확한 데이터라고 볼 수는 없다.
+    // 하지만 가장 최신의 데이터가 있는지 서버를 계속 확인하면서
+    // 사용자에게 빈 달력 대신 프리페칭된 데이터를 보여줄 수 있다.
+    const nextMonthYear = getNewMonthYear(monthYear, 1);
+    queryClient.prefetchQuery(
+      [queryKeys.appointments, nextMonthYear.year, nextMonthYear.month],
+      () => getAppointments(monthYear.year, nextMonthYear.month),
+    );
+  }, [monthYear, queryClient]);
+
   /** ****************** END 2: filter appointments  ******************** */
   /** ****************** START 3: useQuery  ***************************** */
   // useQuery call for appointments for the current monthYear
@@ -70,7 +84,12 @@ export function useAppointments(): UseAppointments {
   //
   //    2. The getAppointments query function needs monthYear.year and
   //       monthYear.month
-  const appointments = {};
+  const fallback = {};
+
+  const { data: appointments = fallback } = useQuery(
+    [queryKeys.appointments, monthYear.year, monthYear.month],
+    () => getAppointments(monthYear.year, monthYear.month),
+  );
 
   /** ****************** END 3: useQuery  ******************************* */
 
