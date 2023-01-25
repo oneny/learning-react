@@ -32,6 +32,11 @@ export const queryClient = new QueryClient({
       onError: (error) => {
         queryErrorHandler(error);
       },
+      staleTime: 1000 * 60 * 10,
+      cacheTime: 1000 * 60 * 15,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   },
 });

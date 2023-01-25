@@ -1,6 +1,12 @@
 // @ts-nocheck
 import dayjs from 'dayjs';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
 import { axiosInstance } from '../../../axiosInstance';
@@ -60,6 +66,19 @@ export function useAppointments(): UseAppointments {
   //   appointments that the logged-in user has reserved (in white)
   const { user } = useUser();
 
+  const selectFn = useCallback(
+    (data) => getAvailableAppointments(data, user),
+    [user],
+  );
+
+  /** ****************** END 2: filter appointments  ******************** */
+  /** ****************** START 3: useQuery  ***************************** */
+  // useQuery call for appointments for the current monthYear
+
+  const commonOptions = {
+    staleTime: 0,
+    cacheTime: 1000 * 60 * 5,
+  };
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -70,12 +89,12 @@ export function useAppointments(): UseAppointments {
     queryClient.prefetchQuery(
       [queryKeys.appointments, nextMonthYear.year, nextMonthYear.month],
       () => getAppointments(monthYear.year, nextMonthYear.month),
+      // select는 프리페치의 옵션이 아니므로 프리페이된 데이터에 추가할 수 없다.
+      {
+        ...commonOptions,
+      },
     );
   }, [monthYear, queryClient]);
-
-  /** ****************** END 2: filter appointments  ******************** */
-  /** ****************** START 3: useQuery  ***************************** */
-  // useQuery call for appointments for the current monthYear
 
   // TODO: update with useQuery!
   // Notes:
@@ -89,6 +108,16 @@ export function useAppointments(): UseAppointments {
   const { data: appointments = fallback } = useQuery(
     [queryKeys.appointments, monthYear.year, monthYear.month],
     () => getAppointments(monthYear.year, monthYear.month),
+    {
+      // showAll 상태가 참인 경우에는 selectFn 함수를 실행하지 않고, 모든 데이터를 반환
+      // showALl 상태가 거짓인 경우에는 selectFn 함수 실행해서 데이터 변환 후 반환
+      select: showAll ? undefined : selectFn,
+      ...commonOptions,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      refetchInterval: 1000, // every second; not recommended for production
+    },
   );
 
   /** ****************** END 3: useQuery  ******************************* */
