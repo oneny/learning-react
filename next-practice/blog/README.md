@@ -82,8 +82,8 @@ browser에서 url을 직접 쳐서 이동하는 것과 달리 JS 상에서 page 
 
 ### SSG의 2가지 케이스
 
-- 외부 데이터 없이 pre-rendering
-- 외부 데이터를 가져와서 pre-rendering
+- **외부 데이터 없이** pre-rendering
+- **외부 데이터를 가져와서** pre-rendering
 - 외부 데이터?
   - 다른 파일, API, DB 등..
 
@@ -127,4 +127,39 @@ export async function getStaticPaths() {
 - getStaticProps나 getStaticPaths 등은 client-side 코드에 포함되지 않는다.
 - 그렇기에 서버 사이드에서는 DB에 직접 접근하는 등 훨씬 자유도 높은 작업을 할 수 있다.
 
+## SEO를 위한 도구
 
+robots.txt와 sitemap
+
+- robots.txt는 검색엔진이나 크롤러 등이 이 사이트의 내용을 수집해가도 되는지 권한 체크를 하는 페이지
+- sitemap은 도메인 내의 페이지 목록
+  - `yarn add -D next-sitemap` 라이브러리 사용
+  - package.json의 script 추가
+    - 'postbuild': 'next-sitemap'
+
+```js
+// next-sitemap.config.js
+module.exports = {
+  siteUrl: 'url',
+  generateRobotsTxt: true,
+};
+```
+
+## 댓글 기능
+
+> [utterances](https://utteranc.es/)
+
+- github public repository 필요
+  - github의 issues와 comments를 활용하기 때문에
+  - [github 마켓플레이스](https://github.com/marketplace)에서 utterances 설치
+- utterances 홈페이지에 가서 script 생성
+  - issue와 post 매치할 타입 선택
+  - script tag를 컴포넌트 중간에 삽입하면 동작을 안함
+  - `Utterances` 컴포넌트를 따로 만들어서 script Element를 생성
+  - 의도치 않은 re-render가 일어나는 경우, 여러 개가 생기기 떄문에
+    - 해당 컴포넌트 memoization 해줘야 한다.
+
+## ESLint
+
+- next에 대한 eslint 설정
+  - [ESLint](https://nextjs.org/docs/basic-features/eslint)
