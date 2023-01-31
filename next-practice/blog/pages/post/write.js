@@ -1,8 +1,17 @@
-import { useRef, useState } from 'react';
-import Layout from '../../components/Layout';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+// export async function getServerSideProps() {
+//   return {};
+// }
 
 export default function Write() {
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log(router.query);
+  }, [router.query]);
   const idRef = useRef();
   const titleRef = useRef();
   const contentRef = useRef();
@@ -41,7 +50,7 @@ export default function Write() {
   };
 
   return (
-    <Layout>
+    <>
       <h1>Write a post</h1>
       <form onSubmit={handleSubmit}>
         <input type="text" name="id" placeholder="id" required ref={idRef} />
@@ -67,6 +76,6 @@ export default function Write() {
       {showLink && (
         <Link href={`/posts/${idRef.current.value}`}>Created Post</Link>
       )}
-    </Layout>
+    </>
   );
 }

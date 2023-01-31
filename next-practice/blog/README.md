@@ -163,3 +163,140 @@ module.exports = {
 
 - next에 대한 eslint 설정
   - [ESLint](https://nextjs.org/docs/basic-features/eslint)
+
+## Compiler / Preview Mode
+
+- 컴파일러 -> 언어를 다른 언어로 변환해주는 도구
+- Babel / Terser -> Transpiler / Minifier(mangle&compress)
+- SWC -> Rust 기반이라 병렬처리가 가능해 빠르다
+- Preview Mode -> 쿠키 / getStaticProps를 request time
+
+## Dynamic Import
+
+- [Dynamic Import](https://nextjs.org/docs/advanced-features/dynamic-import)
+  - Lazy load로 초기 청크 사이즈 줄이기
+  - 컴포넌트를 사용하는 시점에 로드
+  - Next.js에서 Image나 Link 태그를 사용할 떄 viewport안에 들어와 사용자가 사용해야할 때 로드하는 방식으로 최적화를 지원한다.
+
+### 컴포넌트를 Lazy load하는 방법
+
+```js
+dynamic(() => import('../components/Button'), { suspense: true });
+```
+
+By using next/dynamic, the header component will not be included in the page's initial JavaScript bundle. The page will render the Suspense fallback first, followed by the Header component when the Suspense boundary is resolved.
+
+- 외부 라이브러리도 import 함수를 사용해서 dynamic하게 load해서 사용할 수 있다.
+  - 예시: blog 안에 있는 [id].js의 Button을 component로 빼기
+- Promise resolved되어야 렌더
+
+### Automatic Static Optimization
+
+- 정적인 페이지는 `.html`으로 요청에 맞춰 동작하는 페이지는 `.js`로
+- `getInitialProps`나 `getServerSideProps`가 있다면 `.js`
+- 알아서 정적 파일과 동적 파일 구분
+
+### router의 query
+
+- client-side 페이지의 경우, hydration 이후에 query 값을 읽을 수 있다.
+
+  ```js
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log(router.query);
+  }, [router.query]);
+  ```
+
+- 사용자와 인터렉션할 준비가 될 떄까지는 query가 없다고 판단된다.
+
+### Static HTML Export
+
+- [Static HTML Export](https://nextjs.org/docs/advanced-features/static-html-export)
+- Next.js 프로젝트를 정적인 파일들만으로 Build하는 것
+  - CDN 등에 올려서 서비스를 제공 가능
+- 단, Node.js 서버가 있어야지만 동작하는 기능들은 포기해야함
+- 의도적으로 정적 파일로 export 가능
+
+## Custom App & Document && Error Page
+
+### Absolute Imports and Module Path Aliases
+
+- [Absolute Imports and Module Path Aliases](https://nextjs.org/docs/advanced-features/module-path-aliases)
+
+### Custom App
+
+`_document`와 `_app`에는 페이지에 공통적으로 적용될 내용을 작성하는데 어떻게 다른지 살펴보자.    
+`_app`은 서버로 요청이 들어왔을 떄 가장 먼저 실행되는 컴포넌트로, 페이지에 적용할 **공통 레이아웃**의 역할을 한다.
+
+- [Custom App](https://nextjs.org/docs/advanced-features/custom-app)
+- Persisting layout between page changes
+- Keeping state when navigating pages
+- Custom error handling using componentDidCatch
+- Inject additional data into pages
+- Add global CSS
+
+#### 규칙
+
+- `Component` 속성값은 서버에 요청한 페이지가 된다.
+- PageProps는 `getInitialProps`, `getStaticProps`, `getServerSideProps` 중 하나를 통해 페칭한 초기 속성값이 된다.
+
+### Custom Document
+
+`_document`는 `_app` 다음에 실행되며, 공통적으로 활용할 `<head>`(ex. 메타 태그)나 `<body>` 태그 안에 들어갈 내용들을 커스텀할 때 활용한다.
+
+- [Custom App](https://nextjs.org/docs/advanced-features/custom-document)
+- `<html><body>`
+- `_document`는 server에서 동작 고로, onClick은 동작하지 않음
+- `import { Html, Head, Main, NextScript } from 'next/document'`
+- not Data Fetching methods
+
+- 폰트 임포트
+- charset, 웹 접근성 관련 태그 설정
+
+#### 규칙
+
+- `_document`에서 사용하는 `<Head>` 태그는 next/head가 아닌 next/document 모듈에서 불러와야 한다.
+  - `document`의 `<Head>` 태그에는 모든 문서에 공통적으로 적용될 내용(Ex. charset, 뷰포트, 메타태그 등)이 들어가야 한다.
+- `_document`는 **언제나 서버에서 실행되므로** 브라우저 api 또는 이벤트 핸들러가 포함된 코드는 실행되지 않는다.
+- `<Main />` 부분을 제외한 부분은 브라우저에서 실행되지 않으므로 이곳에 비즈니스 로직을 추가해서는 안되며, `_app`과 마찬가지로 `getStaticProps`와 `getServerSideProps`를 통해 데이터를 불러올 수 없다.
+
+## Performance 측정
+
+> [Web Performance](https://web.dev/vitals)
+
+- Largest Contentful Paint(최대 콘텐츠풀 페인트, LCP): 페이지가 처음으로 로딩된 후 2.5초 이내에 발생
+- First Input Delay(최초 입력 지연, FID): 상호 작용을 측정(100밀리초)
+- Cumulative Layout Shift(누적 레이아웃 시프트, CLS): 시각적 안정성을 측정(페이지에서 0.1 이하 유지)
+
+### Google을 활용한 Performance 측정
+
+* https://developers.google.com/speed
+* https://pagespeed.web.dev/
+
+### Chrome을 활용한 Performance 측정
+
+- Performance
+- Lighthouse
+- React debug tool profiler
+
+### Measuring Performance
+
+- [Measuring Performance](https://nextjs.org/docs/advanced-features/measuring-performance)
+  - reportWebVitals
+  - metric.name
+  - custom metrics
+- 웹서비스에 접근한 사용자의 로그 수집
+
+## Error handling
+
+- [Error handling](https://nextjs.org/docs/advanced-features/error-handling)
+
+- Handling Errors in Development - Overlay
+- Handling Server Errors - Custom Error Page
+- Handling Client Erorrs - Error Boundaries
+
+- Error -> handled vs unhandled
+- Error Handling -> Development / Server / Client
+- Error Page Custom -> 404.js / _error.js / next/error
+- Client -> Error Boundary
