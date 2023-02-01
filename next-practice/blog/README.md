@@ -300,3 +300,67 @@ By using next/dynamic, the header component will not be included in the page's i
 - Error Handling -> Development / Server / Client
 - Error Page Custom -> 404.js / _error.js / next/error
 - Client -> Error Boundary
+
+## React 18
+
+- [React 18](https://reactjs.org/blog/2022/03/29/react-v18.html)
+
+- Automatic Batching / Transitions / New Suspense
+- New Client & Server Rendering APIs / Strict Mode
+- useId / useTransition / useDeferredValue
+- useSyncExternalStore / useInsertionEffect ..
+
+### 동시성
+
+기존에는 상태가 변경되면 update와 렌더링까지 React가 알아서 처리   
+React 18부터 update와 렌더링 과정에서 중지가 가능
+
+### React 18 with Next.js
+
+- [React 18 with Next.js](https://nextjs.org/docs/advanced-features/react-18/overview)
+
+### Streaming SSR with Suspense
+
+- https://nextjs.org/docs/advanced-features/react-18/streaming
+  - Stream을 활용해서 SSR의 결과물을 업데이트해준다.
+  - Suspense children resolved 후 stream
+- https://nextjs.org/docs/api-reference/next/streaming
+  - client-side에서 server component를 업데이트할 수 있다.
+
+#### 주의사항
+
+- SSR을 활용하면, third party script 로드 시점을 보장할 수 없어진다.
+- next/head => next/script
+  - `_docuemtn.js`로 옮기고 beforInteractive strategy 적용
+
+#### Server Components
+
+- [Server Components](https://nextjs.org/docs/advanced-features/react-18/server-components)
+  - https://github.com/vercel/next-react-server-components
+  - React 18에서 페이지가 아닌 컴포넌트 별로 Server Components를 통해 server에서 그릴 것과 그렇지 않는 것들은 client에서 그릴 수 있다.
+- [Edge runtime](https://nextjs.org/docs/advanced-features/react-18/switchable-runtime)
+  - runtime: node.js / edge
+  - ssr streaming을 위해서는 web streams를 서포트해야함...
+
+## Data Fetching API
+
+- [getInitialProps](https://nextjs.org/docs/api-reference/data-fetching/get-initial-props)
+  - async / static method / return serialized data / only in page
+  - server-side rendering / SEO
+  - disable Automatic Static Optimization
+- [getServerSideProps](https://nextjs.org/docs/api-reference/data-fetching/get-server-side-props)
+  - export function / pre-render each request
+  - not be bundled for the client-side
+  - return a object (props or notFound or redirect)
+- [getStaticPaths](https://nextjs.org/docs/api-reference/data-fetching/get-static-paths)
+  - export a function from a page that uses Dynamic Routes
+  - statically pre-render all the paths specified by it
+  - return paths / fallback (false: 404 / true / 'blocking')
+  - ISR은 fallback: 'blocking'이어야 가능
+    - false: 새로운 slug 요청이 오더라도 그냥 404 페이지로 이동시킴
+    - true: 새로운 slug 요청이 오면 한 번 getStaticPaths를 돌려 있는지 확인
+- [getStaticProps](https://nextjs.org/docs/basic-features/data-fetching/get-static-props)
+  - pre-render at build time / not be bundled for the client-side
+  - props preview / previewData ...
+  - return props / notFound / redirect + revalidate(seconds)
+  - read files with process.cwd() (current working directory)

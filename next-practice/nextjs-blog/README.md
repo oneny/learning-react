@@ -6,6 +6,15 @@
 - JS loads -> Hydration: React components are initialized and App becomes interative
   - If your app hs interactive components like `<Link />`, they'll be active after JS loads
 
+## Next.js가 제공하는 여러 기능들
+
+- page-based routing system(with dynamic routes)
+- Pre-rendering SSG / SSR
+- Automatic code splitting for faster page loads
+- Client-side routing with optimized prefetching
+- API Routes (with Serverless Functions)
+- Development environment (with Fast Refresh)
+
 ## Pre-rendering과 SEO의 상관관계
 
 - CSR만 제공한다면, Client(브라우저)처럼 동작하지 않는 검색엔진의 경우 아무런 데이터도 조회해갈 수 없다.
