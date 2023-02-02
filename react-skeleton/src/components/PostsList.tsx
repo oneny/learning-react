@@ -5,7 +5,10 @@ import {
   getPostsByUserId,
   postsUrlEndpoint as postsCacheKey,
 } from '../api/postsApi';
-import { getUserById, usersUrlEndpoint as usersCacheKey } from '../api/usersApi';
+import {
+  getUserById,
+  usersUrlEndpoint as usersCacheKey,
+} from '../api/usersApi';
 
 import Post from './Post';
 import SkeletonPost from './Skeleton/SkeletonPost';
@@ -16,15 +19,11 @@ type TPostsListProps = {
 
 const PostsList = ({ currentUserId }: TPostsListProps) => {
   const {
-    isLoading,
-    error,
     data: posts,
-    
-  } = useSWR([postsCacheKey, currentUserId], ([url, userId]) =>
-    getPostsByUserId(url, userId),
-    {
-      onError: (err: AxiosError) => err,
-    }
+  } = useSWR(
+    [postsCacheKey, currentUserId],
+    ([url, userId]) => getPostsByUserId(url, userId),
+    { suspense: true }
   );
 
   const {
@@ -39,28 +38,13 @@ const PostsList = ({ currentUserId }: TPostsListProps) => {
     }
   );
 
-  let content = <></>;
-  if (currentUserId === 0) {
-    content = <p className='loading'>Select an Employee to view posts</p>;
-  } else if (isLoading || isLoadingUser) {
-    content = (
-      <>
-        {[...Array(10).keys()].map((i) => (
-          <SkeletonPost key={i} />
-        ))}
-      </>
-    );
-  } else if (error || userError) {
-    content = <p>{error.message}</p>
-  } else {
-    content = (
-      <main>
-        {posts?.map((post) => (
-          <Post key={post.id} post={post} user={user} /> 
-        ))}
-      </main>
-    )
-  }
+  const content = (
+    <main>
+      {posts?.map((post) => (
+        <Post key={post.id} post={post} user={user} />
+      ))}
+    </main>
+  );
 
   return content;
 };
