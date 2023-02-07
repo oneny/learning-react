@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import getConfig from 'next/config';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 
 // export async function getServerSideProps() {
 //   return {};
 // }
+
+const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
+console.log(serverRuntimeConfig.mySecret);
+console.log(publicRuntimeConfig.staticFolder);
 
 export default function Write() {
   const router = useRouter();

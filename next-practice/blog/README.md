@@ -226,7 +226,7 @@ By using next/dynamic, the header component will not be included in the page's i
 
 ### Custom App
 
-`_document`와 `_app`에는 페이지에 공통적으로 적용될 내용을 작성하는데 어떻게 다른지 살펴보자.    
+`_document`와 `_app`에는 페이지에 공통적으로 적용될 내용을 작성하는데 어떻게 다른지 살펴보자.  
 `_app`은 서버로 요청이 들어왔을 떄 가장 먼저 실행되는 컴포넌트로, 페이지에 적용할 **공통 레이아웃**의 역할을 한다.
 
 - [Custom App](https://nextjs.org/docs/advanced-features/custom-app)
@@ -271,8 +271,8 @@ By using next/dynamic, the header component will not be included in the page's i
 
 ### Google을 활용한 Performance 측정
 
-* https://developers.google.com/speed
-* https://pagespeed.web.dev/
+- https://developers.google.com/speed
+- https://pagespeed.web.dev/
 
 ### Chrome을 활용한 Performance 측정
 
@@ -298,7 +298,7 @@ By using next/dynamic, the header component will not be included in the page's i
 
 - Error -> handled vs unhandled
 - Error Handling -> Development / Server / Client
-- Error Page Custom -> 404.js / _error.js / next/error
+- Error Page Custom -> 404.js / \_error.js / next/error
 - Client -> Error Boundary
 
 ## React 18
@@ -312,7 +312,7 @@ By using next/dynamic, the header component will not be included in the page's i
 
 ### 동시성
 
-기존에는 상태가 변경되면 update와 렌더링까지 React가 알아서 처리   
+기존에는 상태가 변경되면 update와 렌더링까지 React가 알아서 처리  
 React 18부터 update와 렌더링 과정에서 중지가 가능
 
 ### React 18 with Next.js
@@ -364,3 +364,130 @@ React 18부터 update와 렌더링 과정에서 중지가 가능
   - props preview / previewData ...
   - return props / notFound / redirect + revalidate(seconds)
   - read files with process.cwd() (current working directory)
+
+## Router Link API
+
+- 함수형 컴포넌트에서는 useRouter() 사용
+  - 클래스 컴포넌트는 withRouter 활용
+- pathname / query / asPath / isFallback / basePath / locale / locales / defaultLocale / domainLocales / isReady / isPreview
+
+### push와 replace
+
+- router.push: history가 쌓이는 이동
+  - router.push(url, as, options)
+- router.replace: history가 쌓이지 않는 이동
+  - router.replace(url, as, options)
+
+### prefetch
+
+- router.prefetch: 미리 페치해오기
+  - `yarn dev`에서는 동작하지 않음
+  - `yarn build & yarn start` 후 `router.push` 해보면 알 수 있음
+- router.beforePopState: history popState 때 callback 사용가능
+  - return true 하지 않으면 온전히 동작 안함
+
+### back & reload
+
+- router.back: 뒤로가기
+- router.reload: 새로고침
+
+### 그 외
+
+- router.events.[on / off]
+- routeChangeStart(url, { shallow })
+- routeChagneComplete(url, { shallow })
+- routeChangeError(error, url, { shallow })
+- beforeHistoryChange(url, { shallow })
+- hashChangeStart(url, { shallow })
+- hashChangeComplete(url, { shallow })
+
+## 기타 Advanced
+
+### Link
+
+- https://nextjs.org/docs/api-reference/next/link
+- router의 페이지 이동 기능
+- href만 required
+- as / passHref / prefetch / replace / scroll / shallow / locale
+
+### Image
+
+- https://nextjs.org/docs/api-reference/next/image
+- width / height / layout / loader / sizes / quality / prioriy / placeholder
+- style / objectFit / objectPosition / onLoadingComplete / loading
+- blurDataURL / lazyBoundary / lazyRoot / unoptimized
+
+### script
+
+- https://nextjs.org/docs/api-reference/next/script
+- src / onLoad / onError
+- strategy(beforInteractive / afterInteractive / lazyOnload / worker)
+
+### amp
+
+- https://nextjs.org/docs/api-reference/next/script
+- accelerated mobile pages의 준말
+- 구글에서 만든 모바일에서 훨씬 빠른 페이지
+
+### Data Fetching API
+
+- getInitialProps -> static method / Static optimize X
+- getServerSideProps -> request time / props | notFound | redirect
+- getStaticPaths -> paths / fallback(false / true / 'blocking')
+- getStaticProps -> preview / revalidate / process.cwd()
+
+## configuration
+
+- CRA로 만든 프로젝트에서는 webpack config 등을 커스텀하려면 npm run eject하거나 craco(Create React App Configuration Override) 등을 사용해야 했다.
+
+### next.config.js
+
+However, **none of the configs are required**, and it's **not necessary to understand** what each config does. Instead, search for the features you **need to enable or modify** in this section and they will show you what to do.
+
+- [next.config.js](https://nextjs.org/docs/api-reference/next.config.js/introduction)
+- It gets used by the Next.js server and build phases.
+- 우리가 다뤘던 프로젝트 중에 next.config.js가 필요했던 것은 image-app / server-components
+- 유의사항
+  - next.config.js는 Webpack, Babel or TypeScript로 parse되지 않으니 최신 js 문법을 사용하면 안된다.]
+
+### 환경변수(Environment Variables)
+
+- [Environment Variables](https://nextjs.org/docs/api-reference/next.config.js/environment-variables)
+
+### Rewrites
+
+- [Rewrites](https://nextjs.org/docs/api-reference/next.config.js/rewrites)
+  - source to destination rewrite
+
+### Redirects
+
+- [Redirects](https://nextjs.org/docs/api-reference/next.config.js/redirects)
+  - source to destination redirect
+  - rewrite와의 차이점: browser 주소창 url의 변경 여부
+
+### CDN Support with Asset Prefix
+
+- [CDN Support with Asset Prefix](https://nextjs.org/docs/api-reference/next.config.js/cdn-support-with-asset-prefix)
+- CDN에 build 결과물을 올리고 활용할 떄 사용
+
+### Custom Webpack Config
+
+- [Custom Webpack Config](https://nextjs.org/docs/api-reference/next.config.js/custom-webpack-config)
+
+### Compression
+
+- [Compression](https://nextjs.org/docs/api-reference/next.config.js/compression)
+
+### Runtime Configuration
+
+- [Runtime Configuration](https://nextjs.org/docs/api-reference/next.config.js/runtime-configuration)
+- next/config 활용해서 getConfig로 serverRuntimeConfig, publicRuntimeCOnfig 찍어보기
+
+### 그 외
+
+- Disabling x-powered-by / ETag Generation / HTTP Keep-Alive
+- Setting a custom build directory
+  - .next 대신 yarn build 결과물 저장할 경로 지정: distDir: 'build'
+  - next-sitemap에도 sourceDir: 'build' 추가해줘야 함
+- Configuring the Build ID / onDemandEntries
+
