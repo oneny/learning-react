@@ -48,6 +48,7 @@ export function useUser(): UseUser {
   // meant to be called from useAuth
   function updateUser(newUser: User): void {
     // TODO: update the user in the query cache
+    setStoredUser(newUser);
     // 설정하려는 쿼리 데이터에 대한 키를 입력하고, newUser로 전달된 데이터를 지정
     queryClient.setQueryData(queryKeys.user, newUser);
   }
