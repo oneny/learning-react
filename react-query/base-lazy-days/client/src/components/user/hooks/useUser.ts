@@ -57,7 +57,7 @@ export function useUser(): UseUser {
     // TODO: reset user to null in query cache
     // setQueriesData는 실행 후 onSuccess가 실행되고, removeQueires는 실행되지 않는다.
     queryClient.setQueriesData(queryKeys.user, null);
-    queryClient.removeQueries('user-appointments');
+    queryClient.removeQueries([queryKeys.appointments, queryKeys.user]);
   }
 
   return { user, updateUser, clearUser };

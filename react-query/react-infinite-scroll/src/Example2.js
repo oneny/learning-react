@@ -12,14 +12,18 @@ const Example2 = () => {
     status,
     error,
   } = useInfiniteQuery(
-    '/post',
-    ({ pageParam = 1 }) => getPostsPage(pageParam),
+    'post',
+    ({ pageParam }) => getPostsPage(pageParam),
     {
       getNextPageParam: (lastPage, allPages) => {
-        return lastPage.length ? allPages.length + 1 : undefined;
+        console.log(lastPage);
+        console.log(allPages);
+        return lastPage.items.length ? allPages.length + 1 : undefined;
       },
     }
   );
+
+  console.log(data);
 
   const intObserver = useRef();
   const lastPostRef = useCallback(
@@ -29,6 +33,7 @@ const Example2 = () => {
       if (intObserver.current) intObserver.current.disconnect();
 
       intObserver.current = new IntersectionObserver((posts) => {
+        console.log('post', posts);
         if (posts[0].isIntersecting && hasNextPage) {
           console.log('We are near the last post!');
           fetchNextPage();
@@ -44,11 +49,12 @@ const Example2 = () => {
     return <p className='center'>Error: {error.message}</p>;
 
   const content = data?.pages.map((pg) => {
-    return pg.map((post, i) => {
-      if (pg.length === i + 1) {
-        return <Post ref={lastPostRef} key={post.id} post={post} />;
+    return pg.items.map((post, i) => {
+      if (pg.items.length === i + 1) {
+        console.log('hi')
+        return <Post ref={lastPostRef} key={post.date} post={post} />;
       }
-      return <Post key={post.id} post={post} />;
+      return <Post key={post.date} post={post} />;
     });
   });
 
