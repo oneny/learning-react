@@ -11,12 +11,16 @@ import {
 } from '../../../user-storage';
 
 // 사용자의 로그인 여부에 따라 사용자 객체나 null이 될 수 있다.
-async function getUser(user: User | null): Promise<User | null> {
+async function getUser(
+  user: User | null,
+  signal: AbortSignal,
+): Promise<User | null> {
   if (!user) return null;
   const { data }: AxiosResponse<{ user: User }> = await axiosInstance.get(
     `/user/${user.id}`,
     {
       headers: getJWTHeader(user),
+      signal,
     },
   );
 
@@ -33,17 +37,21 @@ export function useUser(): UseUser {
   const queryClient = useQueryClient();
   // TODO: call useQuery to update user data from server
   // 기존 user의 값을 인자로 건네 user의 값을 업데이트하는데 사용된다.
-  const { data: user } = useQuery(queryKeys.user, () => getUser(user), {
-    // onSuccess는 쿼리 함수나 setQueryData에서 데이터를 가져오는 함수이다.
-    initialData: getStoredUser(),
-    onSuccess: (received: User | null) => {
-      if (!received) {
-        clearStoredUser();
-      } else {
-        setStoredUser(received);
-      }
+  const { data: user } = useQuery(
+    queryKeys.user,
+    ({ signal }) => getUser(user, signal),
+    {
+      // onSuccess는 쿼리 함수나 setQueryData에서 데이터를 가져오는 함수이다.
+      initialData: getStoredUser(),
+      onSuccess: (received: User | null) => {
+        if (!received) {
+          clearStoredUser();
+        } else {
+          setStoredUser(received);
+        }
+      },
     },
-  });
+  );
 
   // meant to be called from useAuth
   function updateUser(newUser: User): void {
